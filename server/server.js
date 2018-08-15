@@ -48,7 +48,7 @@ app.get('/todo/:id', (req, res) => {
 })
 
 app.listen(port, () => {
-    console.log('server 3000')
+    console.log(`running server: ${port}`)
 })
 
 module.exports = {app}
