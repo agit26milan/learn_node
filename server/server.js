@@ -23,6 +23,16 @@ app.post('/todo', (req, res) => {
 
 })
 
+app.get('/todo',(req, res) => {
+    todo.find().then((todos) =>{ 
+        res.send({todos})
+    }).catch(e => {
+        res.status(400).send(e)
+    })
+})
+
 app.listen(port, () => {
     console.log('server 3000')
 })
+
+module.exports = {app}
