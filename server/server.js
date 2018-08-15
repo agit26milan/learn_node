@@ -1,3 +1,4 @@
+const {ObjectID} = require('mongodb')
 const express = require('express')
 const bodyParser = require('body-parser')
 const {mongoose} = require('./db/mongoose')
@@ -28,6 +29,21 @@ app.get('/todo',(req, res) => {
         res.send({todos})
     }).catch(e => {
         res.status(400).send(e)
+    })
+})
+
+app.get('/todo/:id', (req, res) => {
+    const id = req.params.id
+    if(!ObjectID.isValid(id)) {
+        return res.status(404).send()
+    }
+    todo.findById(id).then((todos) => {
+        if(!todos) {
+            return res.status(404).send()
+        }
+        res.send(todos)
+    }).catch((e) => {
+        res.status(400).send({})
     })
 })
 

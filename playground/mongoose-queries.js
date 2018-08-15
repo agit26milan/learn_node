@@ -22,4 +22,6 @@ var id = '5b71a5e589fe9206e1004c4c'
 
 User.findById(id).then((user) => {
     console.log('find id', user )
+}).catch((e) => {
+    console.log(e)
 })
