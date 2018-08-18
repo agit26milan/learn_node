@@ -2,6 +2,7 @@ const _ = require('lodash');
 const {ObjectID} = require('mongodb')
 const express = require('express')
 const bodyParser = require('body-parser')
+const env = process.env.NODE_ENV;
 const {mongoose} = require('./db/mongoose')
 const {User} = require('./models/user')
 const {todo} = require('./models/todo')
@@ -92,6 +93,19 @@ app.patch('/todo/:id', (req, res) => {
     })
 
 })
+
+app.post('/user', (req, res) => {
+    let body = _.pick(req.body, ['email', 'password'])
+    let newUser = new User(body)
+    newUser.save().then((data) => {
+        return data.generateAuthToken()
+    }).then((token) => {
+        res.header('x-auth', token).send(newUser)
+    }).catch((e) => {
+        res.status(400).send(e)
+    })
+})
+
 
 app.listen(port, () => {
     console.log(`running server: ${port}`)
