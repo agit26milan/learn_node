@@ -6,7 +6,7 @@ const env = process.env.NODE_ENV;
 const {mongoose} = require('./db/mongoose')
 const {User} = require('./models/user')
 const {todo} = require('./models/todo')
-
+const {authentication} = require('./middleware/authentication')
 const app = express()
 
 const port = process.env.PORT || 3000
@@ -47,6 +47,12 @@ app.get('/todo/:id', (req, res) => {
     }).catch((e) => {
         res.status(400).send({})
     })
+})
+
+
+
+app.get('/user/me', authentication, (req, res) => {
+   res.send(req.user)
 })
 
 app.delete('/todo/:id', (req, res) => {

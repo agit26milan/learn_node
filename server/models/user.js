@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const {sign} = require('jsonwebtoken')
+const {sign, verify} = require('jsonwebtoken')
 const {mongoose} = require('../db/mongoose')
 const {isEmail} = require('validator')
 
@@ -45,6 +45,22 @@ userSchema.methods.generateAuthToken = function(){
     user.tokens.push({access, token})
     return user.save().then(() => {
         return token
+    })
+}
+
+userSchema.statics.findByToken = function(token){
+    var User = this
+    var decoded;
+    try {
+        decoded = verify(token, 'abc123')
+        console.log('decodes',decoded)
+    }catch (e) {
+        return Promise.reject()
+    }
+    return User.findOne({
+         '_id': decoded._id,
+         'tokens.token': token,
+         'tokens.access': 'auth'
     })
 }
 
