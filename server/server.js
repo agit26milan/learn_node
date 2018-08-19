@@ -49,7 +49,13 @@ app.get('/todo/:id', (req, res) => {
     })
 })
 
-
+app.delete('/user/me/logout', authentication, (req, res) => {
+    req.user.removeToken(req.token).then(() => {
+        res.status(200).send()
+    }, (e) => {
+        res.status(404).send(e)
+    })
+})
 
 app.get('/user/me', authentication, (req, res) => {
    res.send(req.user)
