@@ -2,7 +2,7 @@ const _ = require('lodash')
 const {sign, verify} = require('jsonwebtoken')
 const {mongoose} = require('../db/mongoose')
 const {isEmail} = require('validator')
-const {hash, genSalt} = require('bcrypt')
+const {hash, genSalt, compare} = require('bcrypt')
 
 
 const userSchema = new mongoose.Schema({
@@ -63,6 +63,26 @@ userSchema.statics.findByToken = function(token){
          '_id': decoded._id,
          'tokens.token': token,
          'tokens.access': 'auth'
+    })
+}
+
+userSchema.statics.findByCredential = function(email, password){
+    // console.log('ola', email, password)
+    let User = this;
+    return User.findOne({email}).then((user) => {
+        if(!user) {
+            return Promise.reject()
+        }
+
+        return new Promise((resolve, reject) => {
+            compare(password, user.password, (err, res) => {
+                if(res) {
+                    resolve(user)
+                } else {
+                    reject()
+                }
+            })
+        })
     })
 }
 
